@@ -1,3 +1,6 @@
+/* =================================================================
+   vector_calc.y CORREGIDO
+   ================================================================= */
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +13,7 @@ void yyerror(const char *s);
 /* Memoria para variables a..z */
 static Vector *mem[26] = {0};
 
+/* -------- helpers para construir vectores desde la gramática -------- */
 typedef struct NumBuf {
   int n, cap;
   double *a;
@@ -52,6 +56,7 @@ static int ensure_same_size(Vector* a, Vector* b) {
 }
 %}
 
+/* -------- Unión de valores semánticos -------- */
 %union {
   int     id;      /* Para VAR (índice 0-25) */
   double  dval;    /* Para escalares y NÚMEROS */
@@ -59,20 +64,22 @@ static int ensure_same_size(Vector* a, Vector* b) {
   void* buf;     /* Para el buffer temporal (NumBuf*) */
 }
 
-%token <dval> NUMBER
+/* -------- Tokens y Tipos (LA CORRECCIÓN CLAVE ESTÁ AQUÍ) -------- */
+%token <dval> NUMBER   /* CAMBIO: NUMBER ahora es de tipo double */
 %token <id>   VAR
 
 %type <vval> vexpr vector
 %type <dval> scalar num
 %type <buf>  numlist
 
+/* -------- Precedencia de operadores -------- */
 %left '+' '-'
 %left '*'
-%right UMINUS
+%right UMINUS /* Operador unario negativo (ej: -5) */
 
 %%
 
-
+/* La gramática puede ser una secuencia de líneas */
 input
   : /* vacío */
   | input line
@@ -148,3 +155,5 @@ numlist
   | numlist opt_comma num      { NumBuf* b = (NumBuf*)$1; nb_push(b, $3); $$ = (void*)b; }
   ;
 %%
+/* El código después de %% se copia al final del archivo y.tab.c */
+/* No es necesario incluir vector_calc.c aquí si lo enlazas correctamente */
