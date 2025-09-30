@@ -73,7 +73,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 55 "vector_calc.y"
+#line 60 "vector_calc.y"
 
   int     id;      /* Para VAR (índice 0-25) */
   double  dval;    /* Para escalares y NÚMEROS */

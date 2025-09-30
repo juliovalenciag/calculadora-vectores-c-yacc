@@ -4,7 +4,7 @@
 #include "vector_calc.h"
 #include "y.tab.h"
 
-/* Implementación de las funciones de vectores */
+// Implementación de las funciones de vectores
 Vector *creaVector(int n) {
     Vector *v = (Vector *)malloc(sizeof(Vector));
     v->n = n;
@@ -52,7 +52,7 @@ void liberaVector(Vector *v) {
     free(v);
 }
 
-/* Analizador léxico */
+// Analizador léxico
 int yylex(void) {
     int c;
     while ((c = getchar()) == ' ' || c == '\t');
@@ -74,7 +74,8 @@ int yylex(void) {
 }
 
 void yyerror(const char *s) {
-    fprintf(stderr, "%s\n", s);
+    
+    fprintf(stderr, "Error: %s\n", s);
 }
 
 int main() {

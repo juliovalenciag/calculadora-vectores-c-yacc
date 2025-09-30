@@ -67,7 +67,7 @@
 
 
 /* First part of user prologue.  */
-#line 1 "vector_calc.y"
+#line 4 "vector_calc.y"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,6 +80,7 @@ void yyerror(const char *s);
 /* Memoria para variables a..z */
 static Vector *mem[26] = {0};
 
+/* -------- helpers para construir vectores desde la gramática -------- */
 typedef struct NumBuf {
   int n, cap;
   double *a;
@@ -121,7 +122,7 @@ static int ensure_same_size(Vector* a, Vector* b) {
   return 0;
 }
 
-#line 125 "y.tab.c"
+#line 126 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -184,14 +185,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 55 "vector_calc.y"
+#line 60 "vector_calc.y"
 
   int     id;      /* Para VAR (índice 0-25) */
   double  dval;    /* Para escalares y NÚMEROS */
   Vector* vval;    /* Para vectores */
   void* buf;     /* Para el buffer temporal (NumBuf*) */
 
-#line 195 "y.tab.c"
+#line 196 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -623,9 +624,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    77,    77,    78,    82,    83,    84,    88,    89,    94,
-      95,   103,   108,   113,   114,   115,   120,   121,   122,   128,
-     133,   134,   139,   140,   143,   143,   147,   148
+       0,    84,    84,    85,    89,    90,    91,    95,    96,   101,
+     102,   110,   115,   120,   121,   122,   127,   128,   129,   135,
+     140,   141,   146,   147,   150,   150,   154,   155
 };
 #endif
 
@@ -1215,40 +1216,40 @@ yyreduce:
   switch (yyn)
     {
   case 4: /* line: vexpr '\n'  */
-#line 82 "vector_calc.y"
+#line 89 "vector_calc.y"
                       { imprimeVector((yyvsp[-1].vval)); liberaVector((yyvsp[-1].vval)); }
-#line 1221 "y.tab.c"
+#line 1222 "y.tab.c"
     break;
 
   case 5: /* line: scalar '\n'  */
-#line 83 "vector_calc.y"
+#line 90 "vector_calc.y"
                       { printf("%g\n", (yyvsp[-1].dval)); }
-#line 1227 "y.tab.c"
+#line 1228 "y.tab.c"
     break;
 
   case 6: /* line: VAR '=' vexpr '\n'  */
-#line 84 "vector_calc.y"
+#line 91 "vector_calc.y"
                         { 
                         if (mem[(yyvsp[-3].id)]) liberaVector(mem[(yyvsp[-3].id)]);
                         mem[(yyvsp[-3].id)] = (yyvsp[-1].vval); /* No se copia, se "roba" la referencia */
                       }
-#line 1236 "y.tab.c"
+#line 1237 "y.tab.c"
     break;
 
   case 7: /* line: '\n'  */
-#line 88 "vector_calc.y"
+#line 95 "vector_calc.y"
                       { /* Línea vacía */ }
-#line 1242 "y.tab.c"
+#line 1243 "y.tab.c"
     break;
 
   case 8: /* line: error '\n'  */
-#line 89 "vector_calc.y"
+#line 96 "vector_calc.y"
                       { yyerrok; /* Se recupera del error */ }
-#line 1248 "y.tab.c"
+#line 1249 "y.tab.c"
     break;
 
   case 10: /* vexpr: VAR  */
-#line 95 "vector_calc.y"
+#line 102 "vector_calc.y"
                       { 
                         if (!mem[(yyvsp[0].id)]) {
                           yyerror("Error: variable no inicializada");
@@ -1257,102 +1258,102 @@ yyreduce:
                           (yyval.vval) = copiaVector(mem[(yyvsp[0].id)]); 
                         }
                       }
-#line 1261 "y.tab.c"
+#line 1262 "y.tab.c"
     break;
 
   case 11: /* vexpr: vexpr '+' vexpr  */
-#line 103 "vector_calc.y"
+#line 110 "vector_calc.y"
                       {
                         if (ensure_same_size((yyvsp[-2].vval), (yyvsp[0].vval)) == 0) { (yyval.vval) = sumaVector((yyvsp[-2].vval), (yyvsp[0].vval)); }
                         else { (yyval.vval) = creaVector(0); }
                         liberaVector((yyvsp[-2].vval)); liberaVector((yyvsp[0].vval));
                       }
-#line 1271 "y.tab.c"
+#line 1272 "y.tab.c"
     break;
 
   case 12: /* vexpr: vexpr '-' vexpr  */
-#line 108 "vector_calc.y"
+#line 115 "vector_calc.y"
                       {
                         if (ensure_same_size((yyvsp[-2].vval), (yyvsp[0].vval)) == 0) { (yyval.vval) = restaVector((yyvsp[-2].vval), (yyvsp[0].vval)); }
                         else { (yyval.vval) = creaVector(0); }
                         liberaVector((yyvsp[-2].vval)); liberaVector((yyvsp[0].vval));
                       }
-#line 1281 "y.tab.c"
+#line 1282 "y.tab.c"
     break;
 
   case 13: /* vexpr: scalar '*' vexpr  */
-#line 113 "vector_calc.y"
+#line 120 "vector_calc.y"
                       { (yyval.vval) = scalar_mul((yyvsp[-2].dval), (yyvsp[0].vval)); liberaVector((yyvsp[0].vval)); }
-#line 1287 "y.tab.c"
+#line 1288 "y.tab.c"
     break;
 
   case 14: /* vexpr: vexpr '*' scalar  */
-#line 114 "vector_calc.y"
+#line 121 "vector_calc.y"
                       { (yyval.vval) = scalar_mul((yyvsp[0].dval), (yyvsp[-2].vval)); liberaVector((yyvsp[-2].vval)); }
-#line 1293 "y.tab.c"
+#line 1294 "y.tab.c"
     break;
 
   case 15: /* vexpr: '(' vexpr ')'  */
-#line 115 "vector_calc.y"
+#line 122 "vector_calc.y"
                       { (yyval.vval) = (yyvsp[-1].vval); /* Pasa el vector a través de los paréntesis */ }
-#line 1299 "y.tab.c"
+#line 1300 "y.tab.c"
     break;
 
   case 17: /* scalar: '-' scalar  */
-#line 121 "vector_calc.y"
+#line 128 "vector_calc.y"
                             { (yyval.dval) = -(yyvsp[0].dval); }
-#line 1305 "y.tab.c"
+#line 1306 "y.tab.c"
     break;
 
   case 18: /* scalar: '|' vexpr '|'  */
-#line 122 "vector_calc.y"
+#line 129 "vector_calc.y"
                        { 
                          double acc = 0.0;
                          for (int i=0; i<(yyvsp[-1].vval)->n; i++) acc += (yyvsp[-1].vval)->vec[i] * (yyvsp[-1].vval)->vec[i];
                          (yyval.dval) = sqrt(acc);
                          liberaVector((yyvsp[-1].vval));
                        }
-#line 1316 "y.tab.c"
+#line 1317 "y.tab.c"
     break;
 
   case 19: /* scalar: '(' scalar ')'  */
-#line 128 "vector_calc.y"
+#line 135 "vector_calc.y"
                       { (yyval.dval) = (yyvsp[-1].dval); }
-#line 1322 "y.tab.c"
+#line 1323 "y.tab.c"
     break;
 
   case 20: /* vector: '[' ']'  */
-#line 133 "vector_calc.y"
+#line 140 "vector_calc.y"
                       { (yyval.vval) = creaVector(0); }
-#line 1328 "y.tab.c"
+#line 1329 "y.tab.c"
     break;
 
   case 21: /* vector: '[' numlist ']'  */
-#line 134 "vector_calc.y"
+#line 141 "vector_calc.y"
                       { (yyval.vval) = nb_to_vec((NumBuf*)(yyvsp[-1].buf)); }
-#line 1334 "y.tab.c"
+#line 1335 "y.tab.c"
     break;
 
   case 23: /* num: '-' NUMBER  */
-#line 140 "vector_calc.y"
+#line 147 "vector_calc.y"
                       { (yyval.dval) = -(yyvsp[0].dval); }
-#line 1340 "y.tab.c"
+#line 1341 "y.tab.c"
     break;
 
   case 26: /* numlist: num  */
-#line 147 "vector_calc.y"
+#line 154 "vector_calc.y"
                                { NumBuf* b = nb_new(); nb_push(b, (yyvsp[0].dval)); (yyval.buf) = (void*)b; }
-#line 1346 "y.tab.c"
+#line 1347 "y.tab.c"
     break;
 
   case 27: /* numlist: numlist opt_comma num  */
-#line 148 "vector_calc.y"
+#line 155 "vector_calc.y"
                                { NumBuf* b = (NumBuf*)(yyvsp[-2].buf); nb_push(b, (yyvsp[0].dval)); (yyval.buf) = (void*)b; }
-#line 1352 "y.tab.c"
+#line 1353 "y.tab.c"
     break;
 
 
-#line 1356 "y.tab.c"
+#line 1357 "y.tab.c"
 
       default: break;
     }
@@ -1545,5 +1546,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 150 "vector_calc.y"
+#line 157 "vector_calc.y"
 
+/* El código después de %% se copia al final del archivo y.tab.c */
+/* No es necesario incluir vector_calc.c aquí si lo enlazas correctamente */
